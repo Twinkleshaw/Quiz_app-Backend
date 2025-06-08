@@ -58,14 +58,7 @@ class UserController {
   }
 
   static async uploadProfilePicture(req, res) {
-    upload(req, res, async (err) => {
-      if (err) {
-        return res.status(400).json({
-          success: false,
-          message: err.message,
-        });
-      }
-
+    try {
       if (!req.file) {
         return res.status(400).json({
           success: false,
@@ -73,25 +66,23 @@ class UserController {
         });
       }
 
-      try {
-        const filePath = `/profile-pictures/${req.file.filename}`;
-        const user = await UserService.updateProfilePicture(
-          req.user.id,
-          filePath
-        );
+      const filePath = `/profile-pictures/${req.file.filename}`;
+      const user = await UserService.updateProfilePicture(
+        req.user.id,
+        filePath
+      );
 
-        res.json({
-          success: true,
-          data: user,
-          message: "Profile picture updated successfully",
-        });
-      } catch (error) {
-        res.status(400).json({
-          success: false,
-          message: error.message,
-        });
-      }
-    });
+      res.json({
+        success: true,
+        data: user,
+        message: "Profile picture updated successfully",
+      });
+    } catch (error) {
+      res.status(400).json({
+        success: false,
+        message: error.message,
+      });
+    }
   }
 }
 
