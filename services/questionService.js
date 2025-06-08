@@ -31,9 +31,10 @@ class QuestionService {
   }
 
   static async addQuestionsFromCSV(filePath, user) {
-    if (user.role !== "admin") {
+    if (!user || user.role !== "admin") {
       throw new Error("Unauthorized: Only admins can upload questions");
     }
+
     return new Promise((resolve, reject) => {
       const questions = [];
 
@@ -66,7 +67,11 @@ class QuestionService {
             const results = [];
             for (const q of questions) {
               try {
-                const savedQuestion = await QuestionService.addQuestion(q);
+                // Pass the user object explicitly to addQuestion
+                const savedQuestion = await QuestionService.addQuestion(
+                  q,
+                  user
+                ); // ← Here's the fix
                 results.push(savedQuestion);
               } catch (error) {
                 console.error("Error saving question:", q, error);

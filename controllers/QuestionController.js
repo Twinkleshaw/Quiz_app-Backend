@@ -25,11 +25,11 @@ class QuestionController {
         message: "No CSV file uploaded",
       });
     }
-
     try {
+      // Explicitly pass the user object from the request
       const results = await QuestionService.addQuestionsFromCSV(
         req.file.path,
-        req.user
+        req.user // ← Ensure this is passed
       );
 
       // Clean up the uploaded file
